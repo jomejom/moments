@@ -1,85 +1,80 @@
 # Moment 🐸
 
-**A journaling companion that picks up where you left off.**
+### A little space to reflect. A companion that remembers.
 
-Moment is a mobile-first product prototype for people who find traditional journaling intimidating or difficult to sustain. Instead of requiring daily streaks or forcing a blank-page experience, Moment offers optional starting prompts, low-pressure mood check-ins, persistent memories, and personalized follow-ups from Phrug, a friendly frog.
+Moment is a working journaling prototype built around one idea: returning to a thought can be more meaningful than maintaining a streak. Phrug, a friendly frog, guides users through a quiet check-in and helps them revisit earlier reflections.
 
-## Source
-[GitHub: jomejom/moments](https://github.com/jomejom/moments)
+**[Try the live demo →](https://moments-nine-pi.vercel.app/)** · [View the code](https://github.com/jomejom/moments)
 
-## Demo
-[Open Moment](https://moments-nine-pi.vercel.app/). On the Today page, open **About this space** and select **Try two fictional demo entries** to explore Phrug's follow-up experience without entering personal information.
+![Moment’s opening screen: Phrug, a short greeting, and a single Begin button.](docs/greeting.png)
 
-## Guided experience
-![Phrug greets the user before asking one question at a time.](docs/greeting.png)
+## Try it in a minute
 
-Returning users check in with their mood before choosing a previous-entry follow-up or a new topic. [View the mobile nudge screen](docs/returning-mobile.png).
+1. Open the demo and select **Begin**.
+2. Choose a feeling, or skip. Write a reflection and save it.
+3. Reload and check in again. Phrug offers a question based on your previous entry.
+4. Choose **Stay with this** to respond, or **Something new** to start fresh. Find saved reflections in **Memories**.
 
-## Product hypothesis
-A personalized invitation to revisit something you've previously written may be more useful than an arbitrary daily streak. This is **a hypothesis, not a validated retention outcome**.
+To explore without writing your own entry, open **About this space → Try two fictional demo entries**.
 
-## Implemented features
-- One prompt at a time: Phrug’s greeting → optional mood → topic choice → writing → saved confirmation
-- Returning users see a previous-entry nudge after the mood step, with equal access to writing something new
-- Optional starting points tucked behind a disclosure, plus Back navigation that preserves in-session drafts
-- Browser-local persistence (localStorage); reload and entries remain on that device
-- Memories list and entry detail; revisit tags and entry deletion
-- Phrug's deterministic follow-up suggestions derived from stored reflections, prioritizing entries explicitly marked for later
-- Dismiss or switch follow-up prompts
-- Fictional demo entries to let reviewers test the loop
-- Responsive layout, no registration or API key needed
+## The experience
 
-## What is deliberately not built
-- No LLM calls: context-aware follow-ups use a transparent, simple keyword-and-template heuristic; they are **not AI-generated**.
-- No backend, authentication, cross-device sync, notifications, streaks, or claims of clinical coaching.
-- No empirical evidence of increased retention yet.
+- **One thought at a time.** Greeting, optional mood, topic, writing, and confirmation appear as separate steps.
+- **A reason to return.** Follow-ups draw on previous reflections, prioritizing entries marked **Revisit this later**. Users can switch or dismiss a nudge.
+- **Room to choose.** Starting prompts are optional, a new topic is always available, and Back preserves the current draft.
+- **Memories with context.** Saved responses link to their original reflection. Entries can be read, marked for revisiting, or deleted.
+- **A quieter interface.** Brief copy, spacious layouts, serif prompts, and a custom SVG Phrug keep the current question in focus.
+
+[See the returning-user experience on mobile →](docs/returning-mobile.png)
+
+## Implementation and tradeoffs
+
+Built with **Next.js App Router, React, TypeScript, CSS, and Lucide**, and deployed on **Vercel** from GitHub.
+
+The core journey runs entirely in the browser. Reflections persist in `localStorage`; stored records are validated before rendering, failed saves retain the draft, and unreadable data is protected from accidental replacement.
+
+Phrug’s follow-ups use **deterministic keywords and templates**, rather than an LLM. This keeps the prototype usable without API keys or paid services, while demonstrating the contextual follow-up experience. The questions can be generic and are not clinical guidance.
+
+Accessibility work includes descriptive labels, keyboard focus management between steps, an entry dialog with focus trapping and Escape dismissal, reduced-motion support, and contrast checks.
+
+## Scope and privacy
+
+This is an early portfolio prototype built with AI-assisted coding. It explores a product hypothesis; increased engagement or retention has **not** been measured.
+
+There is no account, backend, cross-device sync, or notification system. Journal content stays in the current browser and is not sent to an AI service. Clearing browser data removes saved entries. Unsaved drafts do not survive reloads, and browser tabs are not synchronized.
 
 ## Run locally
+
+Use Node.js 20.9+ and npm.
+
 ```bash
-npm install
+git clone https://github.com/jomejom/moments.git
+cd moments
+npm ci
 npm run dev
 ```
-Open http://localhost:3000.
 
-## Validate
-1. Open Today. Phrug greets you; select **Begin**.
-2. Choose a feeling and **Continue**, or **Skip**.
-3. Select **Start writing** or open **A little help**.
-4. Write an entry, optionally select **Revisit this later**, and save.
-5. Reload, greet Phrug and complete the mood step: a nudge based on your saved entry appears.
-6. Choose **Stay with this** to respond, or **Something new** for a fresh topic.
-7. Save and **My memories** to inspect the entries and response context.
-8. On the nudge step, open **More** to switch memories or dismiss one. Use the fictional demos from About this space or empty Memories to explore without private information.
+Open [localhost:3000](http://localhost:3000). No environment variables are required.
 
-## Privacy
-Journal entries are stored **only in the browser's localStorage** on the current device. They are not sent to an AI service. Clearing browser data removes entries. Do not enter sensitive information in a shared demo browser. The public deployed website serves code but does not make locally stored journal entries public.
+## Validation
 
-## Next experiments
-- Compare contextual vs generic follow-up prompts with consenting test users.
-- Track opt-in, prompt acceptance, and return-to-reflect (without collecting raw journal content by default).
-- Explore permission-based AI prompting with privacy controls and server-held API keys.
+```bash
+npm run lint       # TypeScript checking (tsc --noEmit)
+npm run build      # Production build
+```
 
-## Tech
-Next.js (App Router), React, TypeScript, CSS, Lucide.
+For browser checks, keep the app running and use another terminal:
 
-## Development
-Built as an early portfolio prototype with AI-assisted coding. Describe implemented features accurately, and distinguish design hypotheses from measured outcomes.
-
-## Regression checks
-`npm run lint` runs TypeScript checking (`tsc --noEmit`), not ESLint. Run `npm run build` for the production build.
-
-The browser checks use fictional text and an isolated browser context:
 ```bash
 npx playwright install chromium
-npm run dev
-# In another terminal:
 npm run test:e2e
 npm run test:a11y
 ```
-Set `BASE_URL` to test another local server. If using an existing Chromium installation, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable path. Journey screenshots are written to ignored `test-results/`.
 
-The journey check covers first-time and returning guided flows, choosing a new topic or a previous-entry response, optional mood selection/skipping, Back navigation, saving/reloading, follow-up responses and source context, Memories, revisit tags, switching/dismissal, deletion/reset, demos, keyboard dialog behavior, draft protection, invalid stored data and storage write failures. It checks horizontal overflow at 320, 375, 768 and 1024 pixels. The accessibility check runs axe WCAG 2 A/AA and 2.1 AA rules across all guided steps, optional prompt controls, Memories and the entry dialog; automated checks do not replace screen-reader or real-device testing.
+The regression suite covers both guided journeys, save/reload persistence, response links, draft protection, storage failures, memory controls, keyboard dialog behavior, and overflow checks at 320–1024 px. Axe checks cover 11 interface states against WCAG 2 A/AA and 2.1 AA rules. These checks passed for the current interface; real-device, cross-browser, and screen-reader testing remain areas for further validation.
 
-Unreadable stored entries are left untouched and changes are blocked rather than silently replacing data. Memories offers an explicitly confirmed local reset. Failed writes retain the current draft; unsaved drafts are not persisted across reloads.
+Tests use isolated browser contexts and fictional text. Set `BASE_URL` to check a different server, or `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to use an existing Chromium installation. Screenshots are saved to ignored `test-results/`.
 
-`package-lock.json` records the tested dependencies. A PostCSS 8.5.33 override replaces Next.js's older transitive version without a Next.js major upgrade; recheck this override during future Next.js updates.
+## Next experiment
+
+Compare contextual follow-ups with generic prompts in a consent-based usability study. Measure how often participants open and complete a response, without collecting raw journal text. Use the results to evaluate the idea before making retention claims.
