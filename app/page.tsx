@@ -5,7 +5,6 @@ import {
   BookHeart,
   CalendarDays,
   Heart,
-  Leaf,
   RotateCcw,
   X,
 } from "lucide-react";
@@ -63,18 +62,19 @@ const demo: Entry[] = [
   },
 ];
 function followUp(e: Entry): string {
-  const s = e.text.toLowerCase();
-  if (/presentation|interview|exam|deadline|test/.test(s))
-    return "You mentioned something important coming up. How has that been going?";
-  if (/friend|family|relationship|conversation/.test(s))
-    return "You had something on your mind about a relationship. Has anything changed since then?";
-  if (/dance|practice|exercise|walk|gym/.test(s))
-    return "You mentioned an activity that stood out to you. What did it give you that day?";
-  if (/worr|scared|anxious|stress|overwhelm/.test(s))
-    return "You wrote about something that felt difficult. Does it feel any different today?";
-  if (/happy|grateful|proud|excited/.test(s))
-    return "You shared a positive moment. What would you like to remember about it?";
-  return "Last time you shared something meaningful. Is there anything you’d like to add or revisit?";
+  const text = e.text.toLowerCase();
+  if (/\bpresentation\b/.test(text)) return "How’s the presentation feeling?";
+  if (/\binterview\b/.test(text)) return "How’s the interview feeling?";
+  if (/\b(exam|deadline|test)\b/.test(text)) return "How’s it feeling now?";
+  if (/friend|family|relationship|conversation/.test(text))
+    return "How are things between you?";
+  if (/dance|practice|exercise|walk|gym/.test(text))
+    return "How has that been feeling?";
+  if (/worr|scared|anxious|stress|overwhelm/.test(text))
+    return "A little lighter today?";
+  if (/happy|grateful|proud|excited/.test(text))
+    return "Still holding a little of that joy?";
+  return "Anything you’d like to add?";
 }
 const fmt = (d: string) =>
   new Date(d).toLocaleDateString(undefined, {
@@ -353,11 +353,7 @@ export default function Home() {
               <span className="brand-name">
                 moment<span className="brand-dot">.</span>
               </span>
-              <span className="brand-caption">a little space to feel</span>
             </div>
-          </div>
-          <div className="header-note">
-            <Leaf size={15} /> made for slow moments
           </div>
         </header>
         <nav className="tabs" aria-label="Main navigation">
@@ -395,52 +391,34 @@ export default function Home() {
               <div className="guide-mascot">
                 <Frog />
               </div>
-              <p className="guide-speaker">
-                PHRUG · YOUR LITTLE REFLECTION COMPANION
-              </p>
               <h1 id="step-heading" ref={stepHeading} tabIndex={-1}>
                 {step === "greeting"
                   ? entries.length
-                    ? "Hey, you. Welcome back."
+                    ? "Welcome back."
                     : "Hi, I’m Phrug."
                   : step === "mood"
                     ? "How are you feeling?"
                     : step === "topic"
                       ? follow
-                        ? "A little check-in on last time?"
-                        : "What would you like to reflect on?"
+                        ? followUp(follow)
+                        : "What’s on your mind?"
                       : step === "saved"
-                        ? "A little moment, kept."
+                        ? "Safely kept."
                         : writingPrompt}
               </h1>
               {step === "greeting" && (
                 <>
-                  <p className="guide-copy">
-                    A little space to feel, with a friend to listen.
-                    <br />
-                    We can take it one thought at a time.
-                  </p>
+                  <p className="guide-copy">Take a breath.</p>
                   <button
                     className="primary guide-primary"
                     onClick={() => setStep("mood")}
                   >
-                    Let’s check in <ArrowRight size={17} />
+                    Begin <ArrowRight size={17} />
                   </button>
-                  <p className="guide-note">
-                    No streaks. No right words. Just you, as you are.
-                  </p>
-                  {!entries.length && (
-                    <button className="demo-btn" onClick={addDemo}>
-                      Try two fictional demo entries <ArrowRight size={14} />
-                    </button>
-                  )}
                 </>
               )}
               {step === "mood" && (
                 <>
-                  <p className="guide-copy">
-                    Whatever’s here is welcome. Pick a feeling, or skip this.
-                  </p>
                   <div
                     className="guided-moods"
                     role="group"
@@ -478,7 +456,7 @@ export default function Home() {
                         setStep("topic");
                       }}
                     >
-                      Skip for now
+                      Skip
                     </button>
                   </div>
                 </>
@@ -487,14 +465,11 @@ export default function Home() {
                 <>
                   {follow ? (
                     <>
-                      <p className="guide-copy phrug-question">
-                        {followUp(follow)}
-                      </p>
                       <div className="memory-nudge">
-                        <span>YOU WROTE · {fmt(follow.createdAt)}</span>
+                        <span>{fmt(follow.createdAt)}</span>
                         <blockquote>
-                          {follow.text.length > 240
-                            ? `${follow.text.slice(0, 240)}…`
+                          {follow.text.length > 90
+                            ? `${follow.text.slice(0, 90)}…`
                             : follow.text}
                         </blockquote>
                       </div>
@@ -503,17 +478,17 @@ export default function Home() {
                           className="primary"
                           onClick={() => chooseReflection(follow)}
                         >
-                          Reflect on this <ArrowRight size={17} />
+                          Stay with this <ArrowRight size={17} />
                         </button>
                         <button
                           className="secondary"
                           onClick={() => chooseReflection()}
                         >
-                          Write something new
+                          Something new
                         </button>
                       </div>
                       <details className="other-nudges">
-                        <summary>Try a different nudge</summary>
+                        <summary>More</summary>
                         <div>
                           <button
                             className="text-button"
@@ -533,11 +508,6 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      <p className="guide-copy">
-                        A small win, a big feeling, or something in between.
-                        <br />
-                        Where would you like to begin?
-                      </p>
                       <button
                         className="primary guide-primary"
                         onClick={() => chooseReflection()}
@@ -545,7 +515,7 @@ export default function Home() {
                         Start writing <ArrowRight size={17} />
                       </button>
                       <details className="starting-points">
-                        <summary>Help me find a starting point</summary>
+                        <summary>A little help</summary>
                         <div className="guided-starters">
                           {starters.map((prompt) => (
                             <button
@@ -567,29 +537,22 @@ export default function Home() {
                     className="text-button back-button"
                     onClick={() => setStep("mood")}
                   >
-                    Back to how I’m feeling
+                    Back
                   </button>
                 </>
               )}
               {step === "write" && (
                 <>
-                  <p className="guide-copy">I’m here. A sentence is plenty.</p>
-                  {followSource && (
-                    <div className="response-context">
-                      Picking up your reflection from{" "}
-                      {fmt(
-                        entries.find((e) => e.id === followSource)?.createdAt ||
-                          new Date().toISOString(),
-                      )}
-                    </div>
-                  )}
                   <div className="reflection guided-editor card">
-                    <label htmlFor="reflection" className="editor-label">
+                    <label
+                      htmlFor="reflection"
+                      className="editor-label sr-only"
+                    >
                       Your reflection
                     </label>
                     <textarea
                       id="reflection"
-                      placeholder="Take your time. What’s on your mind?"
+                      placeholder="No need to rush…"
                       value={text}
                       onChange={(e) => {
                         setText(e.target.value);
@@ -603,21 +566,21 @@ export default function Home() {
                         checked={revisit}
                         onChange={(e) => setRevisit(e.target.checked)}
                       />
-                      <span>Let Phrug ask me about this later</span>
+                      <span>Revisit this later</span>
                     </label>
                     <button
                       className="primary"
                       disabled={!text.trim()}
                       onClick={save}
                     >
-                      Save my moment <ArrowRight size={17} />
+                      Save <ArrowRight size={17} />
                     </button>
                   </div>
                   <button
                     className="text-button back-button"
                     onClick={() => setStep("topic")}
                   >
-                    Back to choosing a topic
+                    Back
                   </button>
                 </>
               )}
@@ -625,9 +588,7 @@ export default function Home() {
                 <>
                   {saved && (
                     <p className="guide-copy" role="status">
-                      Your reflection is saved in this browser.
-                      <br />
-                      Thanks for sharing a little of your world with me.
+                      Just here, in this browser.
                     </p>
                   )}
                   <div className="guide-choices">
@@ -635,35 +596,20 @@ export default function Home() {
                       className="primary"
                       onClick={() => setTab("memories")}
                     >
-                      Visit my memories <BookHeart size={17} />
+                      My memories <BookHeart size={17} />
                     </button>
                     <button className="secondary" onClick={beginAgain}>
-                      Another little moment
+                      Write again
                     </button>
                   </div>
-                  <p className="guide-note">
-                    You can leave it here for today. That’s enough. ♡
-                  </p>
                 </>
               )}
             </section>
-            <p className="guided-privacy">
-              Just between you and this browser. No account, no AI service.
-            </p>
           </main>
         ) : (
           <main id="main-content" tabIndex={-1} className="memories">
             <div className="welcome">
-              <span className="eyebrow">
-                <span className="tiny-star">✳</span> YOUR COLLECTION OF LITTLE
-                MOMENTS
-              </span>
-              <h1>
-                Look how far <span>you've wandered.</span>
-              </h1>
-              <p>
-                Every reflection belongs here, even the small and messy ones.
-              </p>
+              <h1>Your memories.</h1>
             </div>
             <div className="mem-header">
               <h2>
@@ -677,11 +623,7 @@ export default function Home() {
             {sorted.length === 0 ? (
               <div className="empty card">
                 <Frog small />
-                <h3>Your memories will live here.</h3>
-                <p>
-                  When you save a reflection, it'll find a home in this little
-                  collection.
-                </p>
+                <h3>A little space for your moments.</h3>
                 <button className="primary" onClick={() => setTab("today")}>
                   Write your first moment <ArrowRight size={16} />
                 </button>
@@ -721,9 +663,19 @@ export default function Home() {
             </button>
           </main>
         )}
-        <footer>
-          made with care, for the little moments <span>✳</span>{" "}
-          <span className="footer-right">Moment · prototype v0.1</span>
+        <footer className="quiet-footer">
+          <details>
+            <summary>About this space</summary>
+            <p>
+              Reflections stay in this browser. Clearing browser data removes
+              them. Phrug uses simple patterns, not AI.
+            </p>
+            {entries.length === 0 && (
+              <button className="demo-btn" onClick={addDemo}>
+                Try two fictional demo entries
+              </button>
+            )}
+          </details>
         </footer>
       </div>
       {selectedEntry && (
@@ -743,7 +695,7 @@ export default function Home() {
             >
               <X size={20} />
             </button>
-            <span className="eyebrow">A MOMENT FROM YOUR PAST</span>
+
             <h2>
               {fmt(selectedEntry.createdAt)} {selectedEntry.mood}
             </h2>

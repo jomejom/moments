@@ -1239,3 +1239,369 @@ summary:focus-visible {
     animation: none;
   }
 }
+
+/* Quiet typography and open space: the current thought takes the foreground. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.app-shell {
+  background:
+    radial-gradient(ellipse at 50% 47%, #eef2e5 0, transparent 48%), #faf9f5;
+}
+.site {
+  max-width: 1040px;
+}
+.topbar {
+  height: 78px;
+  border: 0;
+}
+.brand-mark {
+  background: none;
+  width: 38px;
+  height: 38px;
+}
+.brand {
+  gap: 7px;
+}
+.brand-name {
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -1px;
+}
+.brand .mascot-small {
+  width: 39px;
+}
+.tabs {
+  height: 47px;
+  gap: 24px;
+  border: 0;
+}
+.tabs button {
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom-width: 1px;
+  gap: 7px;
+}
+.tabs svg {
+  width: 14px;
+}
+.tabs .count {
+  background: none;
+  padding: 0;
+  font-size: 10px;
+}
+.guided-main {
+  min-height: calc(100svh - 190px);
+  max-width: 640px;
+  padding: 56px 0 48px;
+}
+.guide-mascot {
+  margin-bottom: 35px;
+}
+.guide-mascot .phrug-mascot {
+  width: 126px;
+}
+.guided-scene h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 5vw, 54px);
+  font-weight: 400;
+  letter-spacing: -1.6px;
+  line-height: 1.15;
+  max-width: 610px;
+  margin-bottom: 32px;
+  color: #354a38;
+  text-shadow: 0 2px 0 #ffffffb3;
+  text-wrap: balance;
+}
+.guide-copy {
+  font-size: 15px;
+  font-weight: 400;
+  color: #5a6b58;
+  margin-bottom: 36px;
+}
+.guide-primary {
+  min-width: 136px;
+  min-height: 48px;
+}
+.primary {
+  font-weight: 500;
+  background: #526e4f;
+  border-radius: 100px;
+}
+.guide-choices button {
+  font-size: 13px;
+  min-width: 145px;
+  border-radius: 100px;
+}
+.guide-choices .secondary {
+  background: transparent;
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.guide-choices {
+  gap: 12px;
+}
+.guided-moods {
+  margin: 14px auto 35px;
+  gap: 15px;
+  max-width: 510px;
+}
+.guided-moods button {
+  border-color: transparent;
+  background: transparent;
+  min-height: 85px;
+  padding: 12px 4px;
+  font-size: 11px;
+  gap: 10px;
+  color: #52624f;
+  box-shadow: none;
+}
+.guided-moods button span {
+  font-size: 30px;
+}
+.guided-moods button:hover,
+.guided-moods button.selected {
+  background: #e7edde;
+  border-color: #6b8560;
+  box-shadow: none;
+}
+.guide-navigation {
+  margin-top: 21px;
+}
+.text-button {
+  font-size: 12px;
+  text-decoration: none;
+  color: #576b51;
+}
+.text-button:hover {
+  text-decoration: underline;
+}
+.back-button {
+  margin-top: 20px;
+}
+.memory-nudge {
+  background: transparent;
+  border: 0;
+  border-left: 1px solid #bccab0;
+  border-radius: 0;
+  padding: 0 0 0 20px;
+  max-width: 405px;
+  margin: 0 auto 33px;
+}
+.memory-nudge > span {
+  font-size: 10px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.memory-nudge blockquote {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #52644e;
+  margin-top: 9px;
+}
+.other-nudges,
+.starting-points {
+  font-size: 12px;
+  margin-top: 16px;
+}
+.other-nudges summary,
+.starting-points summary {
+  list-style: none;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.other-nudges summary::-webkit-details-marker,
+.starting-points summary::-webkit-details-marker {
+  display: none;
+}
+.scene-write .guide-mascot .phrug-mascot {
+  width: 78px;
+}
+.scene-write .guide-mascot {
+  margin-bottom: 24px;
+}
+.scene-write h1 {
+  font-size: clamp(30px, 4.5vw, 43px);
+  margin-bottom: 24px;
+}
+.guided-editor {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0 24px;
+}
+.guided-editor textarea {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #bccab0;
+  border-radius: 0;
+  padding: 15px 0 22px;
+  min-height: 210px;
+  font-family: Georgia, serif;
+  font-size: 19px;
+  line-height: 1.9;
+  resize: vertical;
+}
+.guided-editor textarea:focus-visible {
+  outline: 1px solid #78916e;
+  outline-offset: 8px;
+  border-radius: 2px;
+}
+.guided-editor textarea::placeholder {
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: #67755f;
+}
+.guided-editor .revisit {
+  font-size: 11px;
+  margin-top: 24px;
+}
+.guided-editor > .primary {
+  display: flex;
+  margin: 24px auto 0;
+  min-width: 126px;
+  width: auto;
+  padding: 13px 25px;
+  gap: 9px;
+}
+.quiet-footer {
+  border: 0;
+  padding: 12px 0 22px;
+  text-align: center;
+  font-size: 11px;
+  color: #5c6b56;
+}
+.quiet-footer details {
+  max-width: 390px;
+  margin: auto;
+}
+.quiet-footer summary {
+  list-style: none;
+}
+.quiet-footer summary::-webkit-details-marker {
+  display: none;
+}
+.quiet-footer p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.quiet-footer .demo-btn {
+  margin: auto;
+}
+.memories {
+  padding-top: 56px;
+}
+.memories .welcome h1 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 44px;
+  letter-spacing: -1px;
+}
+.mem-header {
+  margin-top: 0;
+}
+.mem-header h2 {
+  display: none;
+}
+.mem-header {
+  justify-content: flex-end;
+}
+.entry {
+  box-shadow: none;
+  background: #ffffff70;
+}
+.empty {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+}
+.empty h3 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 26px;
+}
+@media (max-width: 570px) {
+  .site {
+    padding: 0 23px;
+  }
+  .topbar {
+    height: 65px;
+  }
+  .tabs {
+    height: 42px;
+  }
+  .guided-main {
+    min-height: calc(100svh - 164px);
+    padding: 40px 0;
+  }
+  .guide-mascot {
+    margin-bottom: 32px;
+  }
+  .guide-mascot .phrug-mascot {
+    width: 112px;
+  }
+  .guided-scene h1 {
+    font-size: 39px;
+    letter-spacing: -1.2px;
+    line-height: 1.15;
+    margin-bottom: 27px;
+  }
+  .guide-copy {
+    font-size: 14px;
+    padding: 0;
+    margin-bottom: 30px;
+  }
+  .guided-moods {
+    max-width: 285px;
+    gap: 11px;
+    margin-bottom: 27px;
+  }
+  .guided-moods button {
+    min-height: 75px;
+  }
+  .guide-choices {
+    gap: 8px;
+    align-items: center;
+  }
+  .guide-choices button {
+    min-width: 170px;
+    max-width: 100%;
+  }
+  .guided-editor {
+    padding: 0 8px;
+  }
+  .guided-editor textarea {
+    font-size: 18px;
+    min-height: 220px;
+  }
+  .scene-write h1 {
+    font-size: 33px;
+  }
+  .memory-nudge {
+    padding-left: 16px;
+    margin-bottom: 25px;
+  }
+  .memory-nudge blockquote {
+    font-size: 16px;
+  }
+  .quiet-footer {
+    padding-bottom: 18px;
+  }
+  .memories {
+    padding-top: 35px;
+  }
+  .memories .welcome h1 {
+    font-size: 36px;
+  }
+}

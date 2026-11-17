@@ -1,3 +1,7 @@
+# Minimal copy and typography update
+
+The greeting is now “Hi, I’m Phrug.” / “Take a breath.” / “Begin”. Repeated reassurance, companion labels, header captions, and explanatory paragraphs have been removed. Follow-ups are short contextual questions. Memory excerpts are limited to 90 characters; the full text remains in Memories. Privacy and demo access live under “About this space”. The editor retains an accessible label without a visible repeated title. Larger serif prompts, restrained controls, a soft green backdrop and open writing space bring the current thought forward. Storage, the guided steps and memory links are preserved. Production build and both Chromium regression scripts passed, with zero axe violations across all 11 tested states.
+
 # Guided-flow update
 
 Today now presents one prompt at a time: Phrug’s greeting, optional mood, reflection topic, editor and saved confirmation. Returning users receive a previous-memory nudge after the mood step, with choices to respond or write something new. Starter prompts and alternative nudges are available behind disclosures. Back keeps the in-session draft; switching between a new reflection and an existing memory asks before replacing written text. Saved responses still link to their original memory. Phrug is now an inline green SVG mascot with a rounded silhouette, tiny feet, shiny eyes and rosy cheeks.

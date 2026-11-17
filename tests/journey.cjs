@@ -22,8 +22,8 @@ const launch = {
     const click = async (name) =>
       page.getByRole("button", { name, exact: true }).click();
     const begin = async () => {
-      await click("Let’s check in");
-      await click("Skip for now");
+      await click("Begin");
+      await click("Skip");
     };
     await page.goto(url);
     await page
@@ -35,7 +35,7 @@ const launch = {
       fullPage: true,
       animations: "disabled",
     });
-    await click("Let’s check in");
+    await click("Begin");
     await page
       .getByRole("heading", { name: "How are you feeling?", exact: true })
       .waitFor();
@@ -50,19 +50,17 @@ const launch = {
     await click("Continue");
     await page
       .getByRole("heading", {
-        name: "What would you like to reflect on?",
+        name: "What’s on your mind?",
         exact: true,
       })
       .waitFor();
-    await page
-      .getByText("Help me find a starting point", { exact: true })
-      .click();
+    await page.getByText("A little help", { exact: true }).click();
     await click("Something on my mind…");
     await page
       .getByRole("textbox")
       .fill("I am worried about my presentation next week.");
-    await page.getByLabel("Let Phrug ask me about this later").check();
-    await click("Save my moment");
+    await page.getByLabel("Revisit this later").check();
+    await click("Save");
     await page.getByRole("status").waitFor();
     const records = () =>
       page.evaluate(() =>
@@ -71,18 +69,18 @@ const launch = {
     assert.equal((await records())[0].mood, "😟");
     await page.reload();
     await page
-      .getByRole("heading", { name: "Hey, you. Welcome back.", exact: true })
+      .getByRole("heading", { name: "Welcome back.", exact: true })
       .waitFor();
     assert.equal(
       await page
-        .getByRole("button", { name: "Reflect on this", exact: true })
+        .getByRole("button", { name: "Stay with this", exact: true })
         .count(),
       0,
     );
     await begin();
     assert.match(
-      await page.locator(".phrug-question").innerText(),
-      /important coming up/,
+      await page.getByRole("heading", { level: 1 }).innerText(),
+      /presentation/,
     );
     assert.equal(await page.getByRole("textbox").count(), 0);
     await page.screenshot({
@@ -91,26 +89,26 @@ const launch = {
       animations: "disabled",
     });
     // The new-topic path is always available, and Back preserves the draft.
-    await click("Write something new");
+    await click("Something new");
     await page.getByRole("textbox").fill("An unfinished draft");
-    await click("Back to choosing a topic");
+    await click("Back");
     page.once("dialog", (d) => d.dismiss());
-    await click("Reflect on this");
-    await click("Write something new");
+    await click("Stay with this");
+    await click("Something new");
     assert.equal(
       await page.getByRole("textbox").inputValue(),
       "An unfinished draft",
     );
-    await click("Back to choosing a topic");
+    await click("Back");
     page.once("dialog", (d) => d.accept());
-    await click("Reflect on this");
+    await click("Stay with this");
     assert.equal(await page.getByRole("textbox").inputValue(), "");
     await page
       .getByRole("textbox")
       .fill("I practiced today and feel much calmer.");
-    await click("Save my moment");
+    await click("Save");
     await page.getByRole("status").waitFor();
-    await click("Visit my memories");
+    await click("My memories");
     assert.equal(await page.locator(".entry").count(), 2);
     await page.locator(".entry").first().click();
     await page.getByRole("dialog").waitFor();
@@ -148,12 +146,15 @@ const launch = {
     await click("Ask Phrug to revisit this");
     await click("Close");
     await click("Today");
-    await click("Another little moment");
-    await click("Skip for now");
-    await page.getByText("Try a different nudge", { exact: true }).click();
-    const first = await page.locator(".phrug-question").innerText();
+    await click("Write again");
+    await click("Skip");
+    await page.getByText("More", { exact: true }).click();
+    const first = await page.getByRole("heading", { level: 1 }).innerText();
     await click("Another memory");
-    assert.notEqual(await page.locator(".phrug-question").innerText(), first);
+    assert.notEqual(
+      await page.getByRole("heading", { level: 1 }).innerText(),
+      first,
+    );
     await click("Don’t bring this up again");
     await page.reload();
     await begin();
@@ -175,15 +176,15 @@ const launch = {
       fullPage: true,
       animations: "disabled",
     });
-    await click("Write something new");
+    await click("Something new");
     await page.getByRole("textbox").fill("x".repeat(500));
     await page.screenshot({
       path: "test-results/writing-mobile.png",
       fullPage: true,
       animations: "disabled",
     });
-    await click("Save my moment");
-    await click("Visit my memories");
+    await click("Save");
+    await click("My memories");
     await page.locator(".entry").first().click();
     assert.equal(
       await page.evaluate(
@@ -218,13 +219,13 @@ const launch = {
       fullPage: true,
       animations: "disabled",
     });
-    await click("Skip for now");
+    await click("Skip");
     assert.equal((await records()).length, 2);
-    await click("Write something new");
+    await click("Something new");
     await page
       .getByRole("textbox")
       .fill("A new thought, unrelated to my old entries.");
-    await click("Save my moment");
+    await click("Save");
     assert.equal((await records())[0].sourceId, undefined);
     // Invalid persisted data must never be replaced by a new save.
     const bad = await context.newPage();
@@ -234,19 +235,13 @@ const launch = {
     );
     await bad.reload();
     await bad.locator(".storage-error").waitFor();
-    await bad
-      .getByRole("button", { name: "Let’s check in", exact: true })
-      .click();
-    await bad
-      .getByRole("button", { name: "Skip for now", exact: true })
-      .click();
+    await bad.getByRole("button", { name: "Begin", exact: true }).click();
+    await bad.getByRole("button", { name: "Skip", exact: true }).click();
     await bad
       .getByRole("button", { name: "Start writing", exact: true })
       .click();
     await bad.getByRole("textbox").fill("Keep my draft");
-    await bad
-      .getByRole("button", { name: "Save my moment", exact: true })
-      .click();
+    await bad.getByRole("button", { name: "Save", exact: true }).click();
     assert.equal(await bad.getByRole("textbox").inputValue(), "Keep my draft");
     assert.equal(
       await bad.evaluate(() => localStorage.getItem("moment.entries.v1")),
@@ -254,12 +249,8 @@ const launch = {
     );
     await bad.evaluate(() => localStorage.clear());
     await bad.reload();
-    await bad
-      .getByRole("button", { name: "Let’s check in", exact: true })
-      .click();
-    await bad
-      .getByRole("button", { name: "Skip for now", exact: true })
-      .click();
+    await bad.getByRole("button", { name: "Begin", exact: true }).click();
+    await bad.getByRole("button", { name: "Skip", exact: true }).click();
     await bad
       .getByRole("button", { name: "Start writing", exact: true })
       .click();
@@ -270,9 +261,7 @@ const launch = {
           throw new DOMException("Quota exceeded", "QuotaExceededError");
         }),
     );
-    await bad
-      .getByRole("button", { name: "Save my moment", exact: true })
-      .click();
+    await bad.getByRole("button", { name: "Save", exact: true }).click();
     await bad.locator(".storage-error").waitFor();
     assert.equal(
       await bad.getByRole("textbox").inputValue(),
@@ -280,7 +269,7 @@ const launch = {
     );
     assert.equal(
       await bad
-        .getByRole("heading", { name: "A little moment, kept.", exact: true })
+        .getByRole("heading", { name: "Safely kept.", exact: true })
         .count(),
       0,
     );

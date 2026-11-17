@@ -8,7 +8,7 @@ Moment is a mobile-first product prototype for people who find traditional journ
 [GitHub: jomejom/moments](https://github.com/jomejom/moments)
 
 ## Demo
-Add a Vercel deployment URL here once published. On the Today page, select **Try two fictional demo entries** to explore Phrug's follow-up experience without entering personal information.
+[Open Moment](https://moments-nine-pi.vercel.app/). On the Today page, open **About this space** and select **Try two fictional demo entries** to explore Phrug's follow-up experience without entering personal information.
 
 ## Guided experience
 ![Phrug greets the user before asking one question at a time.](docs/greeting.png)
@@ -42,14 +42,14 @@ npm run dev
 Open http://localhost:3000.
 
 ## Validate
-1. Open Today. Phrug greets you; select **Let’s check in**.
-2. Choose a feeling and **Continue**, or **Skip for now**.
-3. Select **Start writing** or open **Help me find a starting point**.
-4. Write an entry, optionally select **Let Phrug ask me about this later**, and save.
+1. Open Today. Phrug greets you; select **Begin**.
+2. Choose a feeling and **Continue**, or **Skip**.
+3. Select **Start writing** or open **A little help**.
+4. Write an entry, optionally select **Revisit this later**, and save.
 5. Reload, greet Phrug and complete the mood step: a nudge based on your saved entry appears.
-6. Choose **Reflect on this** to respond, or **Write something new** for a fresh topic.
-7. Save and **Visit my memories** to inspect the entries and response context.
-8. On the nudge step, open **Try a different nudge** to switch memories or dismiss one. Use the fictional demos from the greeting or empty Memories screen to explore without private information.
+6. Choose **Stay with this** to respond, or **Something new** for a fresh topic.
+7. Save and **My memories** to inspect the entries and response context.
+8. On the nudge step, open **More** to switch memories or dismiss one. Use the fictional demos from About this space or empty Memories to explore without private information.
 
 ## Privacy
 Journal entries are stored **only in the browser's localStorage** on the current device. They are not sent to an AI service. Clearing browser data removes entries. Do not enter sensitive information in a shared demo browser. The public deployed website serves code but does not make locally stored journal entries public.
