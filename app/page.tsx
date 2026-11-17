@@ -4,12 +4,9 @@ import {
   ArrowRight,
   BookHeart,
   CalendarDays,
-  Check,
   Heart,
   Leaf,
-  MessageCircle,
   RotateCcw,
-  Sparkles,
   X,
 } from "lucide-react";
 
@@ -91,17 +88,47 @@ const randomId = () =>
     : `${Date.now()}-${Math.random()}`;
 function Frog({ small = false }: { small?: boolean }) {
   return (
-    <div
-      className={`frog ${small ? "frog-small" : ""}`}
-      aria-label="Phrug the friendly frog"
+    <svg
+      className={`phrug-mascot ${small ? "mascot-small" : ""}`}
+      viewBox="0 0 200 164"
       role="img"
+      aria-label="Phrug the friendly frog"
     >
-      <span className="eye left" />
-      <span className="eye right" />
-      <span className="cheek c-left" />
-      <span className="cheek c-right" />
-      <span className="smile" />
-    </div>
+      <ellipse cx="100" cy="151" rx="65" ry="7" fill="#355b3910" />
+      <ellipse cx="59" cy="140" rx="25" ry="12" fill="#80b76b" />
+      <ellipse cx="141" cy="140" rx="25" ry="12" fill="#80b76b" />
+      <path
+        d="M25 98C22 78 31 61 45 51C39 20 75 9 91 36C97 34 103 34 109 36C125 9 161 20 155 51C169 61 178 78 175 98C173 134 145 146 100 146S27 134 25 98Z"
+        fill="#9dce85"
+        stroke="#689653"
+        strokeWidth="3"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M41 111C53 133 78 136 100 136S147 133 159 111C152 136 129 145 100 145S48 136 41 111Z"
+        fill="#8cc174"
+      />
+      <ellipse cx="69" cy="63" rx="8" ry="11" fill="#293f2d" />
+      <ellipse cx="131" cy="63" rx="8" ry="11" fill="#293f2d" />
+      <circle cx="66.5" cy="59" r="2.5" fill="white" />
+      <circle cx="128.5" cy="59" r="2.5" fill="white" />
+      <ellipse cx="52" cy="86" rx="13" ry="7" fill="#eda99e" opacity=".8" />
+      <ellipse cx="148" cy="86" rx="13" ry="7" fill="#eda99e" opacity=".8" />
+      <path
+        d="M87 85Q93 94 100 86Q107 94 113 85"
+        fill="none"
+        stroke="#365338"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M44 113Q49 125 59 123M156 113Q151 125 141 123"
+        fill="none"
+        stroke="#689653"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
 export default function Home() {
@@ -115,6 +142,16 @@ export default function Home() {
     [selected, setSelected] = useState<string | null>(null),
     [promptIndex, setPromptIndex] = useState(0),
     [followSource, setFollowSource] = useState<string | undefined>();
+  const [step, setStep] = useState<
+    "greeting" | "mood" | "topic" | "write" | "saved"
+  >("greeting");
+  const [writingPrompt, setWritingPrompt] = useState("What's on your mind?");
+  const stepHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (!hydrated || tab !== "today") return;
+    if (step === "write") document.getElementById("reflection")?.focus();
+    else stepHeading.current?.focus();
+  }, [step, tab, hydrated]);
   const [storageError, setStorageError] = useState("");
   const unreadableStorage = useRef(false);
   const dialogRef = useRef<HTMLElement>(null);
@@ -234,21 +271,30 @@ export default function Home() {
     setRevisit(false);
     setFollowSource(undefined);
     setSaved(true);
-    window.setTimeout(() => setSaved(false), 3500);
+    setStep("saved");
   };
-  const startFollow = () => {
-    if (!follow) return;
+  const chooseReflection = (
+    source?: Entry,
+    prompt = "What's on your mind?",
+  ) => {
     if (
       text.trim() &&
+      source?.id !== followSource &&
       !window.confirm(
-        "Replace your unfinished draft with a response to this reflection?",
+        "Replace your unfinished draft with a different reflection?",
       )
     )
       return;
-    setText("");
-    setFollowSource(follow.id);
-    setTab("today");
-    window.setTimeout(() => document.getElementById("reflection")?.focus(), 80);
+    if (source?.id !== followSource) setText("");
+    setFollowSource(source?.id);
+    setWritingPrompt(source ? followUp(source) : prompt);
+    setSaved(false);
+    setStep("write");
+  };
+  const beginAgain = () => {
+    setSaved(false);
+    setWritingPrompt("What's on your mind?");
+    setStep("mood");
   };
   const discardFollow = () => {
     if (!follow) return;
@@ -267,10 +313,14 @@ export default function Home() {
       )
     )
       return;
-    updateEntries((old) => [
+    const added = updateEntries((old) => [
       ...demo.filter((d) => !old.some((e) => e.id === d.id)),
       ...old,
     ]);
+    if (added) {
+      setTab("today");
+      setStep("mood");
+    }
     setPromptIndex(0);
   };
   const reset = () => {
@@ -281,6 +331,8 @@ export default function Home() {
     ) {
       if (updateEntries(() => [], true)) {
         setSelected(null);
+        setFollowSource(undefined);
+        setStep("greeting");
         setPromptIndex(0);
       }
     }
@@ -335,178 +387,269 @@ export default function Home() {
             Opening your little space…
           </main>
         ) : tab === "today" ? (
-          <main id="main-content" tabIndex={-1} className="main-layout">
-            <section className="main-column">
-              <div className="welcome">
-                <span className="eyebrow">
-                  <span className="tiny-star">✳</span> YOUR LITTLE CORNER OF THE
-                  INTERNET
-                </span>
-                <h1>
-                  Hey, you. <span>How are you feeling?</span>
-                </h1>
-                <p>
-                  You don't need to have the right words. Just start somewhere,
-                  and we'll figure it out together.
-                </p>
+          <main id="main-content" tabIndex={-1} className="guided-main">
+            <section
+              className={`guided-scene scene-${step}`}
+              aria-labelledby="step-heading"
+            >
+              <div className="guide-mascot">
+                <Frog />
               </div>
-              <article className="reflection card">
-                <div className="card-heading">
-                  <span className="icon-box">
-                    <MessageCircle size={19} />
-                  </span>
-                  <div>
-                    <h2>A moment for yourself</h2>
-                    <p>Anything counts. Even a sentence.</p>
-                  </div>
-                </div>
-                <div className="mood-label">
-                  How's your heart today? <span>(optional)</span>
-                </div>
-                <div className="moods" role="group" aria-label="Choose a mood">
-                  {moods.map((m, i) => (
-                    <button
-                      aria-label={moodNames[i]}
-                      aria-pressed={mood === m}
-                      className={mood === m ? "selected" : ""}
-                      onClick={() => setMood(mood === m ? "" : m)}
-                      key={m}
-                    >
-                      {m}
+              <p className="guide-speaker">
+                PHRUG · YOUR LITTLE REFLECTION COMPANION
+              </p>
+              <h1 id="step-heading" ref={stepHeading} tabIndex={-1}>
+                {step === "greeting"
+                  ? entries.length
+                    ? "Hey, you. Welcome back."
+                    : "Hi, I’m Phrug."
+                  : step === "mood"
+                    ? "How are you feeling?"
+                    : step === "topic"
+                      ? follow
+                        ? "A little check-in on last time?"
+                        : "What would you like to reflect on?"
+                      : step === "saved"
+                        ? "A little moment, kept."
+                        : writingPrompt}
+              </h1>
+              {step === "greeting" && (
+                <>
+                  <p className="guide-copy">
+                    A little space to feel, with a friend to listen.
+                    <br />
+                    We can take it one thought at a time.
+                  </p>
+                  <button
+                    className="primary guide-primary"
+                    onClick={() => setStep("mood")}
+                  >
+                    Let’s check in <ArrowRight size={17} />
+                  </button>
+                  <p className="guide-note">
+                    No streaks. No right words. Just you, as you are.
+                  </p>
+                  {!entries.length && (
+                    <button className="demo-btn" onClick={addDemo}>
+                      Try two fictional demo entries <ArrowRight size={14} />
                     </button>
-                  ))}
-                </div>
-                <div className="divider" />
-                <label htmlFor="reflection" className="prompt-title">
-                  What's on your mind?
-                </label>
-                <div className="starters">
-                  {starters.map((s) => (
+                  )}
+                </>
+              )}
+              {step === "mood" && (
+                <>
+                  <p className="guide-copy">
+                    Whatever’s here is welcome. Pick a feeling, or skip this.
+                  </p>
+                  <div
+                    className="guided-moods"
+                    role="group"
+                    aria-label="Choose a mood"
+                  >
+                    {moods.map((m, i) => (
+                      <button
+                        key={m}
+                        aria-pressed={mood === m}
+                        className={mood === m ? "selected" : ""}
+                        onClick={() => setMood(mood === m ? "" : m)}
+                      >
+                        <span aria-hidden="true">{m}</span>
+                        {moodNames[i]}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="primary guide-primary"
+                    onClick={() => setStep("topic")}
+                  >
+                    Continue <ArrowRight size={17} />
+                  </button>
+                  <div className="guide-navigation">
                     <button
-                      key={s}
+                      className="text-button"
+                      onClick={() => setStep("greeting")}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="text-button"
                       onClick={() => {
-                        setText((prev) => (prev ? `${prev}\n${s} ` : `${s} `));
-                        document.getElementById("reflection")?.focus();
+                        setMood("");
+                        setStep("topic");
                       }}
                     >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                {followSource && (
-                  <div className="follow-active">
-                    Continuing a previous reflection: “
-                    {entries.find((e) => e.id === followSource)
-                      ? followUp(entries.find((e) => e.id === followSource)!)
-                      : "Add your response"}
-                    ”{" "}
-                    <button
-                      onClick={() => setFollowSource(undefined)}
-                      aria-label="Remove follow-up"
-                    >
-                      <X size={14} />
+                      Skip for now
                     </button>
                   </div>
-                )}
-                <textarea
-                  id="reflection"
-                  placeholder="There's no perfect way to begin. Write whatever comes to mind…"
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={6}
-                />
-                <div className="journal-footer">
-                  <label className="revisit">
-                    <input
-                      type="checkbox"
-                      checked={revisit}
-                      onChange={(e) => setRevisit(e.target.checked)}
-                    />
-                    <span>Let Phrug ask me about this later</span>
-                  </label>
-                  <button
-                    className="primary"
-                    disabled={!text.trim()}
-                    onClick={save}
-                  >
-                    {saved ? (
-                      <>
-                        <Check size={17} /> Saved
-                      </>
-                    ) : (
-                      <>
-                        Save my moment <ArrowRight size={17} />
-                      </>
-                    )}
-                  </button>
-                </div>
-                {saved && (
-                  <div role="status" className="success">
-                    Your reflection is saved in this browser. No streaks, no
-                    pressure. ♡
-                  </div>
-                )}
-              </article>
-            </section>
-            <aside className="side-column">
-              <div className="phrug-card">
-                <div className="phrug-glow" />
-                <div className="phrug-top">
-                  <Frog />
-                  <span className="phrug-hello">
-                    hi, i'm phrug! <span>✳</span>
-                  </span>
-                </div>
-                <h3>A gentle nudge, from me to you</h3>
-                {follow ? (
-                  <>
-                    <p className="phrug-question">“{followUp(follow)}”</p>
-                    <p className="phrug-source">
-                      Remembering your reflection from {fmt(follow.createdAt)}
-                    </p>
-                    <div className="phrug-buttons">
-                      <button className="phrug-respond" onClick={startFollow}>
-                        Reflect on this <ArrowRight size={16} />
-                      </button>
-                      <button
-                        disabled={candidates.length < 2}
-                        className="phrug-other"
-                        onClick={() => setPromptIndex((i) => i + 1)}
-                      >
-                        Another <RotateCcw size={14} />
-                      </button>
-                    </div>
-                    <button className="dismiss" onClick={discardFollow}>
-                      Don't bring this up again
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p className="phrug-question">
-                      “Whenever you're ready, write a little something. I'll
-                      remember what matters to you.”
-                    </p>
-                    <p className="phrug-source">
-                      Your next visit can pick up where you left off.
-                    </p>
-                  </>
-                )}
-              </div>
-              <div className="gentle-card">
-                <div className="gentle-heading">
-                  <Sparkles size={18} /> <b>A note on showing up</b>
-                </div>
-                <p>
-                  No streaks to maintain. No days to make up. Every time you
-                  return is enough.
-                </p>
-              </div>
-              {entries.length === 0 && (
-                <button className="demo-btn" onClick={addDemo}>
-                  Try two fictional demo entries <ArrowRight size={14} />
-                </button>
+                </>
               )}
-            </aside>
+              {step === "topic" && (
+                <>
+                  {follow ? (
+                    <>
+                      <p className="guide-copy phrug-question">
+                        {followUp(follow)}
+                      </p>
+                      <div className="memory-nudge">
+                        <span>YOU WROTE · {fmt(follow.createdAt)}</span>
+                        <blockquote>
+                          {follow.text.length > 240
+                            ? `${follow.text.slice(0, 240)}…`
+                            : follow.text}
+                        </blockquote>
+                      </div>
+                      <div className="guide-choices">
+                        <button
+                          className="primary"
+                          onClick={() => chooseReflection(follow)}
+                        >
+                          Reflect on this <ArrowRight size={17} />
+                        </button>
+                        <button
+                          className="secondary"
+                          onClick={() => chooseReflection()}
+                        >
+                          Write something new
+                        </button>
+                      </div>
+                      <details className="other-nudges">
+                        <summary>Try a different nudge</summary>
+                        <div>
+                          <button
+                            className="text-button"
+                            disabled={candidates.length < 2}
+                            onClick={() => setPromptIndex((i) => i + 1)}
+                          >
+                            Another memory <RotateCcw size={14} />
+                          </button>
+                          <button
+                            className="text-button"
+                            onClick={discardFollow}
+                          >
+                            Don’t bring this up again
+                          </button>
+                        </div>
+                      </details>
+                    </>
+                  ) : (
+                    <>
+                      <p className="guide-copy">
+                        A small win, a big feeling, or something in between.
+                        <br />
+                        Where would you like to begin?
+                      </p>
+                      <button
+                        className="primary guide-primary"
+                        onClick={() => chooseReflection()}
+                      >
+                        Start writing <ArrowRight size={17} />
+                      </button>
+                      <details className="starting-points">
+                        <summary>Help me find a starting point</summary>
+                        <div className="guided-starters">
+                          {starters.map((prompt) => (
+                            <button
+                              className="secondary"
+                              key={prompt}
+                              onClick={() =>
+                                chooseReflection(undefined, prompt)
+                              }
+                            >
+                              {prompt}
+                              <ArrowRight size={15} />
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                    </>
+                  )}
+                  <button
+                    className="text-button back-button"
+                    onClick={() => setStep("mood")}
+                  >
+                    Back to how I’m feeling
+                  </button>
+                </>
+              )}
+              {step === "write" && (
+                <>
+                  <p className="guide-copy">I’m here. A sentence is plenty.</p>
+                  {followSource && (
+                    <div className="response-context">
+                      Picking up your reflection from{" "}
+                      {fmt(
+                        entries.find((e) => e.id === followSource)?.createdAt ||
+                          new Date().toISOString(),
+                      )}
+                    </div>
+                  )}
+                  <div className="reflection guided-editor card">
+                    <label htmlFor="reflection" className="editor-label">
+                      Your reflection
+                    </label>
+                    <textarea
+                      id="reflection"
+                      placeholder="Take your time. What’s on your mind?"
+                      value={text}
+                      onChange={(e) => {
+                        setText(e.target.value);
+                        setSaved(false);
+                      }}
+                      rows={6}
+                    />
+                    <label className="revisit">
+                      <input
+                        type="checkbox"
+                        checked={revisit}
+                        onChange={(e) => setRevisit(e.target.checked)}
+                      />
+                      <span>Let Phrug ask me about this later</span>
+                    </label>
+                    <button
+                      className="primary"
+                      disabled={!text.trim()}
+                      onClick={save}
+                    >
+                      Save my moment <ArrowRight size={17} />
+                    </button>
+                  </div>
+                  <button
+                    className="text-button back-button"
+                    onClick={() => setStep("topic")}
+                  >
+                    Back to choosing a topic
+                  </button>
+                </>
+              )}
+              {step === "saved" && (
+                <>
+                  {saved && (
+                    <p className="guide-copy" role="status">
+                      Your reflection is saved in this browser.
+                      <br />
+                      Thanks for sharing a little of your world with me.
+                    </p>
+                  )}
+                  <div className="guide-choices">
+                    <button
+                      className="primary"
+                      onClick={() => setTab("memories")}
+                    >
+                      Visit my memories <BookHeart size={17} />
+                    </button>
+                    <button className="secondary" onClick={beginAgain}>
+                      Another little moment
+                    </button>
+                  </div>
+                  <p className="guide-note">
+                    You can leave it here for today. That’s enough. ♡
+                  </p>
+                </>
+              )}
+            </section>
+            <p className="guided-privacy">
+              Just between you and this browser. No account, no AI service.
+            </p>
           </main>
         ) : (
           <main id="main-content" tabIndex={-1} className="memories">

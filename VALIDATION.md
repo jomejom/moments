@@ -1,3 +1,15 @@
+# Guided-flow update
+
+Today now presents one prompt at a time: Phrug’s greeting, optional mood, reflection topic, editor and saved confirmation. Returning users receive a previous-memory nudge after the mood step, with choices to respond or write something new. Starter prompts and alternative nudges are available behind disclosures. Back keeps the in-session draft; switching between a new reflection and an existing memory asks before replacing written text. Saved responses still link to their original memory. Phrug is now an inline green SVG mascot with a rounded silhouette, tiny feet, shiny eyes and rosy cheeks.
+
+Current regression scripts cover both guided journeys, selecting/skipping moods, new-topic choice, response context, drafts, storage failure protection, Memories, revisit tags, switching/dismissal, deletion and demos. Automated accessibility coverage includes all 11 guided, expanded-control and Memories/dialog states. Responsive checks cover 320/375/768/1024 px, with desktop and mobile screenshots. Browser-local storage format is unchanged. No backend, authentication, paid API or image service was introduced.
+
+`npm run lint`, `npm run build`, `npm run test:e2e` and `npm run test:a11y` passed for this update. Browser checks were repeated against the production server, with no page errors and no axe violations across the 11 tested states. Desktop and mobile screenshots were visually inspected; fictional preview screenshots are included in `docs/`.
+
+The previous validation record below describes the original dashboard revision; use README's current validation steps for this version.
+
+---
+
 # Moment validation — November 16, 2026
 
 ## Result

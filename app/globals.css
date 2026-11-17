@@ -911,3 +911,331 @@ footer,
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* One conversation, one prompt at a time. */
+.phrug-mascot {
+  display: block;
+  width: 186px;
+  height: auto;
+  overflow: visible;
+  flex-shrink: 0;
+}
+.phrug-mascot.mascot-small {
+  width: 48px;
+  height: 40px;
+}
+.guide-mascot {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.guided-main {
+  max-width: 660px;
+  margin: auto;
+  padding: 52px 0 30px;
+  min-height: calc(100svh - 220px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.guided-scene {
+  text-align: center;
+  width: 100%;
+  animation: arrive 0.28s ease-out;
+}
+.guide-speaker {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  color: #596e58;
+  margin: 0 0 16px;
+}
+.guided-scene h1 {
+  font-size: 36px;
+  line-height: 1.25;
+  letter-spacing: -1.2px;
+  margin: 0 auto 16px;
+  max-width: 620px;
+  font-weight: 700;
+  text-wrap: balance;
+  outline: none;
+}
+
+.guide-copy {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #58685a;
+  margin: 0 auto 27px;
+  max-width: 510px;
+  text-wrap: pretty;
+}
+.guide-primary {
+  min-width: 200px;
+  min-height: 48px;
+  font-size: 14px;
+  padding: 15px 24px;
+}
+.guide-note,
+.guided-privacy {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #627260;
+  margin: 24px 0 0;
+}
+.guided-privacy {
+  text-align: center;
+  margin-top: 48px;
+}
+.guided-scene .demo-btn {
+  margin: 12px auto 0;
+  color: #4b6b51;
+}
+.guided-moods {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin: 28px auto;
+  max-width: 560px;
+}
+.guided-moods button {
+  border: 1px solid #dde5d7;
+  background: #fffefa;
+  border-radius: 17px;
+  padding: 17px 4px 13px;
+  color: #4b614d;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 96px;
+}
+.guided-moods button span {
+  font-size: 29px;
+  line-height: 1.2;
+}
+.guided-moods button:hover,
+.guided-moods button.selected {
+  background: #e7f0df;
+  border-color: #567e50;
+  box-shadow: 0 0 0 1px #567e50;
+}
+.guide-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+.text-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  color: #506c51;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  min-height: 44px;
+  padding: 10px;
+  font-size: 13px;
+}
+.text-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.guide-choices {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.guide-choices button {
+  min-height: 48px;
+  font-size: 14px;
+  padding: 14px 22px;
+}
+.secondary {
+  border: 1px solid #bccdb5;
+  border-radius: 12px;
+  background: #fffefa;
+  color: #405b43;
+  padding: 14px 20px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+}
+.secondary:hover {
+  background: #edf3e7;
+}
+.memory-nudge {
+  max-width: 500px;
+  margin: 0 auto 25px;
+  background: #eef3e7;
+  border: 1px solid #dde6d5;
+  border-radius: 18px;
+  padding: 20px 24px;
+  text-align: left;
+}
+.memory-nudge > span {
+  font-size: 10px;
+  color: #52684f;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+.memory-nudge blockquote {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #465b45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.other-nudges,
+.starting-points {
+  margin: 20px auto 0;
+  max-width: 500px;
+  font-size: 13px;
+  color: #506c51;
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+  align-content: center;
+  list-style-position: inside;
+}
+summary:focus-visible {
+  outline: 3px solid #9bbca1;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.other-nudges > div {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.guided-starters {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+.guided-starters button {
+  justify-content: space-between;
+  text-align: left;
+}
+.back-button {
+  margin-top: 18px;
+}
+.guided-editor {
+  text-align: left;
+  padding: 24px;
+  max-width: 580px;
+  margin: auto;
+}
+.editor-label {
+  display: block;
+  font-weight: 650;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.guided-editor textarea {
+  min-height: 185px;
+}
+.guided-editor .revisit {
+  margin: 18px 0;
+  min-height: 28px;
+}
+.guided-editor > .primary {
+  width: 100%;
+  min-height: 48px;
+  font-size: 14px;
+}
+.scene-write .guide-mascot {
+  margin-bottom: 8px;
+}
+.scene-write .phrug-mascot {
+  width: 112px;
+}
+.scene-write h1 {
+  font-size: 29px;
+}
+.scene-write .response-context {
+  font-size: 12px;
+  background: transparent;
+  color: #596e58;
+  margin-bottom: 12px;
+  padding: 0;
+}
+.scene-write .guide-copy {
+  margin-bottom: 18px;
+}
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 570px) {
+  .guided-main {
+    padding: 32px 0 24px;
+    min-height: calc(100svh - 190px);
+  }
+  .guided-scene h1 {
+    font-size: 29px;
+    letter-spacing: -0.8px;
+  }
+  .guide-copy {
+    font-size: 15px;
+    padding: 0 8px;
+    margin-bottom: 22px;
+  }
+  .guide-speaker {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+  }
+  .phrug-mascot {
+    width: 158px;
+  }
+  .guided-moods {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    max-width: 360px;
+    margin: 22px auto;
+  }
+  .guided-moods button {
+    min-height: 84px;
+    padding: 12px 5px 10px;
+    gap: 7px;
+  }
+  .guide-choices {
+    flex-direction: column;
+    max-width: 350px;
+    margin: auto;
+  }
+  .guided-editor {
+    padding: 20px 16px;
+  }
+  .memory-nudge {
+    padding: 17px 20px;
+  }
+  .guided-privacy {
+    font-size: 11px;
+    margin-top: 30px;
+  }
+  .scene-write h1 {
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guided-scene {
+    animation: none;
+  }
+}
